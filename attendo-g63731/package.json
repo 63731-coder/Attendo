@@ -10,6 +10,7 @@
     "lint": "eslint . --fix"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.49.4",
     "@tailwindcss/vite": "^4.1.3",
     "pinia": "^3.0.1",
     "tailwindcss": "^4.1.3",
