@@ -17,8 +17,9 @@ const signInWithGoogle = async () => {
 
 const signOut = async () => {
   await supabase.auth.signOut()
-  window.location.reload()
+  window.location.href = '/' //redige vers la page d'accueil
 }
+
 </script>
 
 <template>
