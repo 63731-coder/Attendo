@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { supabase } from '@/supabase'
+import BreadcrumbComponent from '@/components/BreadcrumbComponent.vue'
+
 
 const user = ref(null)
 
@@ -11,8 +13,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="p-4">
+  <div class="px-6 pt-6"> <!-- padding entre breadcrumb et ^ -->
     <template v-if="user">
+      <BreadcrumbComponent />
       <h2 class="text-xl font-semibold mb-2">Bonjour, {{ user.email }}</h2>
     </template>
     <template v-else>

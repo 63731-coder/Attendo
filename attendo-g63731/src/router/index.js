@@ -5,12 +5,15 @@ import SessionView from '@/views/SessionView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
-  { path: '/', name: 'Accueil', component: AccueilView },
+  {
+    path: '/',
+    name: 'Accueil',
+    component: AccueilView },
   {
     path: '/sessions',
     name: 'Sessions',
     component: SessionView,
-    meta: { requiresAuth: true } // protégé
+    meta: { requiresAuth: true, breadcrumb: 'Sessions' }
   },
   {
     path: '/apropos',
@@ -26,7 +29,6 @@ const router = createRouter({
   routes
 })
 
-// ✅ Guard globale
 router.beforeEach(async (to, from, next) => {
   const { data } = await supabase.auth.getUser()
   const user = data.user
