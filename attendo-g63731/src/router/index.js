@@ -1,6 +1,7 @@
 import { supabase } from '@/supabase'
 import AccueilView from '@/views/AccueilView.vue'
 import AProposView from '@/views/AProposView.vue'
+import SessionDetailView from '@/views/SessionDetailView.vue'
 import SessionView from '@/views/SessionView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -8,7 +9,8 @@ const routes = [
   {
     path: '/',
     name: 'Accueil',
-    component: AccueilView },
+    component: AccueilView
+  },
   {
     path: '/sessions',
     name: 'Sessions',
@@ -19,7 +21,19 @@ const routes = [
     path: '/apropos',
     name: 'APropos',
     component: AProposView,
+  },
+  {
+    path: '/sessions/:id',
+    name: 'SessionDetail',
+    component: SessionDetailView,
+    meta: {
+      requiresAuth: true,
+      breadcrumb: 'Détail Session',
+      breadcrumbParent: 'Sessions'
+    }
   }
+
+
 ]
 
 

@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { getSessions, addSession } from '@/services/listSessionsService'
 import BreadcrumbComponent from '@/components/BreadcrumbComponent.vue'
+import { addSession, getSessions } from '@/services/listSessionsService'
+import { onMounted, ref } from 'vue'
 
 const sessions = ref([])
 const newSessionName = ref('')
@@ -39,13 +39,14 @@ onMounted(fetchSessions)
     <div class="bg-white rounded-xl shadow-md mb-12 overflow-hidden max-w-md">
       <div class="bg-gray-100 text-gray-700 px-4 py-2 font-semibold tracking-wide">SESSIONS</div>
       <ul>
-        <li
-          v-for="session in sessions"
-          :key="session.id"
-          class="px-4 py-2 hover:bg-gray-50 border-t border-gray-200 cursor-pointer text-sky-600 font-medium capitalize"
-        >
+        <RouterLink
+        v-for="session in sessions"
+        :key="session.id"
+        :to="`/sessions/${session.id}`"
+          class="block px-4 py-2 hover:bg-gray-50 border-t border-gray-200 text-sky-600 font-medium capitalize">
           {{ session.label }}
-        </li>
+        </RouterLink>
+
       </ul>
     </div>
 
@@ -53,12 +54,8 @@ onMounted(fetchSessions)
     <div class="bg-white rounded-xl shadow-md p-5 w-full max-w-md">
       <h3 class="text-lg font-semibold mb-3">Ajouter une session</h3>
       <form @submit.prevent="handleAddSession" class="flex gap-2 items-center">
-        <input
-          v-model="newSessionName"
-          type="text"
-          placeholder="juin"
-          class="flex-1 border border-gray-300 rounded px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-sky-400"
-        />
+        <input v-model="newSessionName" type="text" placeholder="juin"
+          class="flex-1 border border-gray-300 rounded px-4 py-2 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-sky-400" />
         <button class="border border-sky-600 text-sky-600 px-4 py-2 rounded hover:bg-sky-50 transition">
           Ajouter
         </button>
