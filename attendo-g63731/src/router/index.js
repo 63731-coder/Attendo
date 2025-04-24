@@ -19,7 +19,6 @@ const routes = [
     path: '/apropos',
     name: 'APropos',
     component: AProposView,
-    meta: { requiresAuth: true } //protégé aussi
   }
 ]
 

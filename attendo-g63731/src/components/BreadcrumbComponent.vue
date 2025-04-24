@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { useRoute } from 'vue-router'
+import { useRoute } from 'vue-router';
 
 const route = useRoute()
 
@@ -23,6 +23,6 @@ const crumbs = route.matched
   .filter(r => r.path !== '/')
   .map(r => ({
     path: r.path,
-    label: r.name || r.path.replace('/', '')
+    label: r.meta.breadcrumb || r.name || r.path.replace('/', '')
   }))
 </script>
