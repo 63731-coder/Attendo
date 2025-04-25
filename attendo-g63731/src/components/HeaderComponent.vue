@@ -1,6 +1,6 @@
 <script setup>
 import { supabase } from '@/supabase'
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const user = ref(null)
 
@@ -24,13 +24,13 @@ const signOut = async () => {
 
 <template>
   <header class="bg-sky-600 text-white p-4 shadow-md flex justify-between items-center">
-    <h1 class="text-xl font-bold">Attendo</h1>
-
     <nav class="flex gap-4">
       <RouterLink to="/" class="hover:underline">Accueil</RouterLink>
       <RouterLink to="/sessions" class="hover:underline">Sessions</RouterLink>
       <RouterLink to="/apropos" class="hover:underline">À propos</RouterLink>
     </nav>
+
+    <h1 class="text-3xl font-bold text-white-500">Attendo</h1>
 
     <div>
       <template v-if="user">
