@@ -3,6 +3,7 @@ import AccueilView from '@/views/AccueilView.vue'
 import AProposView from '@/views/AProposView.vue'
 import SessionDetailView from '@/views/SessionDetailView.vue'
 import SessionView from '@/views/SessionView.vue'
+import SessionCompoDetailView from '@/views/UE.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
@@ -31,9 +32,13 @@ const routes = [
       breadcrumb: 'Détail Session',
       breadcrumbParent: 'Sessions'
     }
+  },
+  {
+    path: '/compo/:id',
+    name: 'SessionCompoDetail',
+    component: SessionCompoDetailView,
+    meta: {  requiresAuth: true, breadcrumb: 'UE' }
   }
-
-
 ]
 
 

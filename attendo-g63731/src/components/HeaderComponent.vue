@@ -23,14 +23,14 @@ const signOut = async () => {
 </script>
 
 <template>
-  <header class="bg-sky-600 text-white p-4 shadow-md flex justify-between items-center">
+  <header class="bg-black text-white p-4 shadow-md flex justify-between items-center">
     <nav class="flex gap-4">
       <RouterLink to="/" class="hover:underline">Accueil</RouterLink>
       <RouterLink to="/sessions" class="hover:underline">Sessions</RouterLink>
       <RouterLink to="/apropos" class="hover:underline">À propos</RouterLink>
     </nav>
 
-    <h1 class="text-3xl font-bold text-white-500">Attendo</h1>
+    <h1 class="text-3xl font-bold text-pink-400">Attendo</h1>
 
     <div>
       <template v-if="user">
