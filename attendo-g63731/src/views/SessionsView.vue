@@ -52,27 +52,17 @@ export default {
 
     <!-- TABLE DES SESSIONS -->
     <div class="flex justify-center mb-12">
-      <TableComponent
-        :headers="['Sessions']"
-        :data="sessions"
-        :columns="['label']"
-        @row-click="goToSession"
-      />
+      <TableComponent :headers="['Sessions']" :data="sessions" :columns="['label']" @row-click="goToSession" />
+
+      <p v-if="sessions.length === 0" class="text-gray-600 mb-6 ml-20">
+        Aucune session enregistré
+      </p>
     </div>
 
+
     <!-- FORMULAIRE AJOUT -->
-    <AddFormComponent
-      :titre="'Ajouter une session'"
-      :options="[]"
-      :existants="sessions"
-      :identifiant="'label'"
-      :type="'input'"
-      :placeholder="'Nom de la session'"
-      :prefixLabel="'Nouvelle session'"
-      :boutonLabel="'Ajouter'"
-      :messageDoublon="'Cette session existe déjà.'"
-      @ajout="handleAddSession"
-    />
+    <AddFormComponent :titre="'Ajouter une session'" :options="[]" :existants="sessions" :identifiant="'label'"
+      :type="'input'" :placeholder="'Nom de la session'" :prefixLabel="'Nouvelle session'" :boutonLabel="'Ajouter'"
+      :messageDoublon="'Cette session existe déjà.'" @ajout="handleAddSession" />
   </div>
 </template>
-

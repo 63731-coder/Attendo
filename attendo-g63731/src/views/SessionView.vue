@@ -8,6 +8,9 @@
 
     <!-- TABLEAU DES UEs -->
     <TableComponent :headers="['UE']" :data="ues" :columns="['ue']" @row-click="goToUE" />
+    <p v-if="ues.length === 0" class="text-gray-600 mb-6 ml-20">
+      Aucune ue pour cette session
+    </p>
 
 
     <!-- FORMULAIRE AJOUT UE -->

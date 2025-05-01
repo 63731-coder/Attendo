@@ -11,6 +11,10 @@
       <CardComponent v-for="ev in events" :key="ev.id" :label="ev.label" />
     </div>
 
+    <p v-if="events.length === 0" class="text-gray-600 mb-6 ml-20">
+      Aucune épreuve pour ce UE.
+    </p>
+
     <!-- FORMULAIRE AJOUT -->
     <AddFormComponent class="mt-10" :titre="'Ajouter une épreuve'" :type="'input'" :options="[]"
       :placeholder="'Nom de lépreuve'" :prefixLabel="'Créer'" :messageDoublon="'Cette épreuve existe déjà.'"
