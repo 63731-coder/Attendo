@@ -1,13 +1,23 @@
 import { supabase } from '@/supabase'
 
-export async function getSessions() { //récupérer toutes les sessions
-  const { data, error } = await supabase.from('session').select('*').order('id', { ascending: true })
+// Récupérer toutes les sessions triées par ID
+export async function getSessions() {
+  const { data, error } = await supabase
+    .from('session')
+    .select('*')
+    .order('id', { ascending: true })
+
   if (error) throw error
   return data
 }
 
-export async function addSession(name) { //ajouter une nouvelle session
-  const { data, error } = await supabase.from('session').insert({ label: name }).select()
+// Ajouter une session
+export async function addSession(label) {
+  const { data, error } = await supabase
+    .from('session')
+    .insert({ label })
+    .select()
+
   if (error) throw error
   return data
 }
