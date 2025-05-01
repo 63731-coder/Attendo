@@ -1,18 +1,18 @@
 import { supabase } from '@/supabase'
 
-// Récupération d'une session par id
-//export async function getSessionById(sessionId) {
-//  const { data, error } = await supabase
-//    .from('session')
-//    .select('label')
-//    .eq('id', sessionId)
-//    .single()
-//
-//  if (error) throw error
-//  return data
-//}
+// Récupération du label d'une session par son ID
+export async function getSessionById(sessionId) {
+  const { data, error } = await supabase
+    .from('session')
+    .select('label')
+    .eq('id', sessionId)
+    .single()
 
-// Toutes les UEs disponibles (depuis la table `ue`)
+  if (error) throw error
+  return data
+}
+
+// Récupération de toutes les UEs disponibles
 export async function getAllUEs() {
   const { data, error } = await supabase
     .from('ue')
@@ -23,17 +23,7 @@ export async function getAllUEs() {
   return data.map(item => item.ue)
 }
 
-// Ajouter une UE à une session
-export async function addUEToSession(sessionId, ueLabel) {
-  const { data, error } = await supabase
-    .from('session_compo')
-    .insert([{ session: sessionId, ue: ueLabel }])
-
-  if (error) throw error
-  return data
-}
-
-// Récupérer les UEs déjà associées à une session
+// UEs associées à une session spécifique
 export async function getSessionUEs(sessionId) {
   const { data, error } = await supabase
     .from('session_compo')
@@ -47,14 +37,11 @@ export async function getSessionUEs(sessionId) {
   }))
 }
 
-// Récupérer le label de la session
-export async function getSessionById(sessionId) {
-  const { data, error } = await supabase
-    .from('session')
-    .select('label')
-    .eq('id', sessionId)
-    .single()
+// Ajouter une UE à une session
+export async function addUEToSession(sessionId, ueLabel) {
+  const { error } = await supabase
+    .from('session_compo')
+    .insert([{ session: sessionId, ue: ueLabel }])
 
   if (error) throw error
-  return data
 }

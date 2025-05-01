@@ -3,6 +3,7 @@ import AccueilView from '@/views/AccueilView.vue'
 import AProposView from '@/views/AProposView.vue'
 import SessionView from '@/views/SessionsView.vue'
 import SessionDetailView from '@/views/SessionView.vue'
+import UE from '@/views/UE.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
@@ -35,7 +36,7 @@ const routes = [
   {
     path: '/sessions/:sessionId/:id',
     name: 'UE',
-    component: () => import('@/views/UE.vue'),
+    component: UE,
     meta: {
       requiresAuth: true,
       breadcrumb: 'UE',
