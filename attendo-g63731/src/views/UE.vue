@@ -6,7 +6,6 @@
       Liste des épreuves pour l'UE {{ ueId }}
     </h2>
 
-    <!-- TABLEAU DES ÉPREUVES -->
     <div class="flex gap-4 flex-wrap mb-6">
       <CardComponent v-for="ev in events" :key="ev.id" :label="ev.label" />
     </div>
@@ -15,10 +14,18 @@
       Aucune épreuve pour ce UE.
     </p>
 
-    <!-- FORMULAIRE AJOUT -->
-    <AddFormComponent class="mt-10" :titre="'Ajouter une épreuve'" :type="'input'" :options="[]"
-      :placeholder="'Nom de lépreuve'" :prefixLabel="'Créer'" :messageDoublon="'Cette épreuve existe déjà.'"
-      :existants="events" :identifiant="'label'" @ajout="addEvent" />
+    <AddFormComponent
+      class="mt-10"
+      :titre="'Ajouter une épreuve'"
+      :type="'input'"
+      :options="[]"
+      :placeholder="'Nom de l’épreuve'"
+      :prefixLabel="'Créer'"
+      :messageDoublon="'Cette épreuve existe déjà.'"
+      :existants="events"
+      :identifiant="'label'"
+      @ajout="addEvent"
+    />
   </div>
 </template>
 
@@ -26,7 +33,12 @@
 import AddFormComponent from '@/components/AddFormComponent.vue'
 import BreadcrumbComponent from '@/components/BreadcrumbComponent.vue'
 import CardComponent from '@/components/CardComponent.vue'
-import { supabase } from '@/supabase'
+
+import {
+  addEventToCompo,
+  getEventsBySessionCompo,
+  getSessionCompoId
+} from '../services/ueService'
 
 export default {
   components: {
@@ -36,77 +48,31 @@ export default {
   },
   data() {
     return {
-      ueId: null,
-      sessionId: this.$route.params.sessionId,
+      ueId: this.$route.params.id,
+      sessionId: Number(this.$route.params.sessionId),
       events: [],
-      compoId: null // utilisé pour l'insertion
-    }
-  },
-  computed: {
-    ueLabel() {
-      return this.ueId?.label || 'UE'
+      compoId: null
     }
   },
   async mounted() {
-    const id = await this.getSessionCompoId()
-    if (!id) return
-
-    this.compoId = id
-    this.ueId = this.$route.params.ueId
-    console.log('this.compoId:', this.compoId)
-    console.log('Route params:', this.$route.params)
+    this.compoId = await getSessionCompoId(this.sessionId, this.ueId)
+    if (!this.compoId) return
 
     await this.loadEvents()
   },
   methods: {
     async loadEvents() {
-      if (!this.compoId) {
-        console.warn('compoId manquant – impossible de charger les événements')
-        return
-      }
-
-      const { data, error } = await supabase
-        .from('event')
-        .select('*')
-        .eq('session_compo', this.compoId)
-
-      if (error) {
-        console.error('Erreur chargement events:', error.message)
-      } else {
-        this.events = data
-      }
+      if (!this.compoId) return
+      this.events = await getEventsBySessionCompo(this.compoId)
     },
 
     async addEvent(label) {
-      const { error } = await supabase.from('event').insert([
-        {
-          label,
-          session_compo: this.compoId,
-          completed: false
-        }
-      ])
-
-      if (!error) {
+      try {
+        await addEventToCompo(label, this.compoId)
         await this.loadEvents()
-      } else {
-        console.error('Erreur ajout event:', error.message)
+      } catch (error) {
+        console.error("Erreur addEvent from UE:", error.message)
       }
-    },
-
-    async getSessionCompoId() {
-      console.log('ueId:', this.$route.params.id);
-      console.log('sessionId:', this.$route.params.sessionId);
-      const { data, error } = await supabase
-        .from('session_compo')
-        .select('id')
-        .eq('ue', this.$route.params.id)
-        .eq('session', this.$route.params.sessionId)
-        .maybeSingle()
-      if (error || !data) {
-        console.error('Erreur récupération session_compo:', error?.message || 'Pas de résultat')
-        return null
-      }
-      return data.id
     }
   }
 }
