@@ -1,6 +1,7 @@
 import { supabase } from '@/supabase'
 import AccueilView from '@/views/AccueilView.vue'
 import AProposView from '@/views/AProposView.vue'
+import ExaminationRoomView from '@/views/ExaminationRoomView.vue'
 import SessionView from '@/views/SessionsView.vue'
 import SessionDetailView from '@/views/SessionView.vue'
 import UEView from '@/views/UEView.vue'
@@ -41,6 +42,16 @@ const routes = [
       requiresAuth: true,
       breadcrumb: 'UE',
       breadcrumbParent: 'Session'
+    }
+  },
+  {
+    path: '/sessions/:sessionId/:ueId/:id',
+    name: 'ExaminationRoom',
+    component: ExaminationRoomView,
+    meta: {
+      requiresAuth: true,
+      breadcrumb: 'Epreuve',
+      breadcrumbParent: 'UE'
     }
   }
 ]

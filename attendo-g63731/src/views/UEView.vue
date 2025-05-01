@@ -6,26 +6,17 @@
       Liste des épreuves pour l'UE {{ ueId }}
     </h2>
 
-    <div class="flex gap-4 flex-wrap mb-6">
-      <CardComponent v-for="ev in events" :key="ev.id" :label="ev.label" />
+    <div class="flex gap-4 flex-wrap mb-6 ml-20">
+      <CardComponent v-for="event in events" :key="event.id" :label="event.label" @click="goToEvent(event)" />
     </div>
 
     <p v-if="events.length === 0" class="text-gray-600 mb-6 ml-20">
       Aucune épreuve pour ce UE.
     </p>
 
-    <AddFormComponent
-      class="mt-10"
-      :titre="'Ajouter une épreuve'"
-      :type="'input'"
-      :options="[]"
-      :placeholder="'bilan, projet, examen..'"
-      :prefixLabel="'Intitulé'"
-      :messageDoublon="'Cette épreuve existe déjà.'"
-      :existants="events"
-      :identifiant="'label'"
-      @ajout="addEvent"
-    />
+    <AddFormComponent class="mt-10" :titre="'Ajouter une épreuve'" :type="'input'" :options="[]"
+      :placeholder="'bilan, projet, examen..'" :prefixLabel="'Intitulé'" :messageDoublon="'Cette épreuve existe déjà.'"
+      :existants="events" :identifiant="'label'" @ajout="addEvent" />
   </div>
 </template>
 
@@ -73,7 +64,17 @@ export default {
       } catch (error) {
         console.error("Erreur addEvent from UE:", error.message)
       }
-    }
+    },
+    goToEvent(event) {
+    this.$router.push({
+      name: 'ExaminationRoom',
+      params: {
+        sessionId: this.$route.params.sessionId,
+        ueId: this.$route.params.id,
+        id: event.id
+      }
+    })
+  }
   }
 }
 </script>
