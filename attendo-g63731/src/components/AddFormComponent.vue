@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-white rounded-xl shadow-md p-5 w-full max-w-md mt-10">
+  <div class="bg-white rounded-xl shadow-md p-5 w-full max-w-lg mt-10">
     <h3 class="text-lg font-semibold mb-3">{{ titre }}</h3>
-    <form @submit.prevent="handleSubmit" class="flex gap-0 shadow rounded overflow-hidden max-w-md">
+    <form @submit.prevent="handleSubmit" class="flex gap-0 shadow rounded overflow-hidden w-full max-w-xl">
       <span class="px-4 py-2 bg-gray-100 text-gray-700 border border-gray-300 border-r-0 flex items-center">
         {{ prefixLabel }}
       </span>
@@ -19,11 +19,10 @@
       </select>
 
 
-      <button type="submit"
-        class="px-4 py-2 border border-gray-300 text-sky-700 font-medium hover:bg-sky-50 transition rounded-r disabled:opacity-50 disabled:cursor-not-allowed"
-        :disabled="!selectedValue || isDuplicate">
+      <button type="submit" class="border border-black text-black px-4 py-2 rounded hover:bg-gray-100 transition">
         {{ boutonLabel }}
       </button>
+
     </form>
 
     <p v-if="isDuplicate" class="text-red-500 text-sm mt-2">

@@ -1,9 +1,8 @@
 import { supabase } from '@/supabase'
 import AccueilView from '@/views/AccueilView.vue'
 import AProposView from '@/views/AProposView.vue'
-import SessionDetailView from '@/views/SessionDetailView.vue'
-import SessionView from '@/views/SessionView.vue'
-import SessionCompoDetailView from '@/views/UE.vue'
+import SessionView from '@/views/SessionsView.vue'
+import SessionDetailView from '@/views/SessionView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
@@ -25,19 +24,23 @@ const routes = [
   },
   {
     path: '/sessions/:id',
-    name: 'SessionDetail',
+    name: 'Session',
     component: SessionDetailView,
     meta: {
       requiresAuth: true,
-      breadcrumb: 'Détail Session',
+      breadcrumb: 'Session',
       breadcrumbParent: 'Sessions'
     }
   },
   {
-    path: '/compo/:id',
-    name: 'SessionCompoDetail',
-    component: SessionCompoDetailView,
-    meta: {  requiresAuth: true, breadcrumb: 'UE' }
+    path: '/sessions/:sessionId/:id',
+    name: 'UE',
+    component: () => import('@/views/UE.vue'),
+    meta: {
+      requiresAuth: true,
+      breadcrumb: 'UE',
+      breadcrumbParent: 'Session'
+    }
   }
 ]
 

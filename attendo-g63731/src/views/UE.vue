@@ -1,79 +1,108 @@
 <template>
   <div class="bg-gray-100 min-h-screen px-6 pt-6">
     <BreadcrumbComponent />
+
     <h2 class="text-xl font-bold text-sky-700 mb-6">
-      Liste des épreuves pour la session_compo #{{ compoId }}
+      Liste des épreuves pour l'UE {{ ueId }}
     </h2>
 
-    <!-- Liste des épreuves -->
+    <!-- TABLEAU DES ÉPREUVES -->
     <div class="flex gap-4 flex-wrap mb-6">
-      <div
-        v-for="ev in events"
-        :key="ev.id"
-        class="bg-white p-6 rounded-lg shadow text-center font-semibold w-40"
-      >
-        {{ ev.label }}
-      </div>
+      <CardComponent v-for="ev in events" :key="ev.id" :label="ev.label" />
     </div>
 
-    <!-- Formulaire ajout épreuve -->
-    <div class="bg-white rounded-xl shadow-md p-5 w-full max-w-md">
-      <h3 class="text-lg font-semibold mb-3">Ajouter une épreuve</h3>
-      <form @submit.prevent="addEvent" class="flex gap-2">
-        <input
-          v-model="newLabel"
-          type="text"
-          placeholder="Intitulé : bilan, projet, examen..."
-          class="flex-1 px-4 py-2 border border-gray-300 rounded"
-        />
-        <button class="border px-4 py-2 rounded text-sky-600 border-sky-600 hover:bg-sky-50">
-          Créer
-        </button>
-      </form>
-    </div>
+    <!-- FORMULAIRE AJOUT -->
+    <AddFormComponent class="mt-10" :titre="'Ajouter une épreuve'" :type="'input'" :options="[]"
+      :placeholder="'Nom de lépreuve'" :prefixLabel="'Créer'" :messageDoublon="'Cette épreuve existe déjà.'"
+      :existants="events" :identifiant="'label'" @ajout="addEvent" />
   </div>
 </template>
 
 <script>
+import AddFormComponent from '@/components/AddFormComponent.vue'
 import BreadcrumbComponent from '@/components/BreadcrumbComponent.vue'
+import CardComponent from '@/components/CardComponent.vue'
 import { supabase } from '@/supabase'
 
 export default {
-  components: { BreadcrumbComponent },
+  components: {
+    BreadcrumbComponent,
+    AddFormComponent,
+    CardComponent
+  },
   data() {
     return {
-      compoId: this.$route.params.id,
+      ueId: null,
+      sessionId: this.$route.params.sessionId,
       events: [],
-      newLabel: ''
+      compoId: null // utilisé pour l'insertion
+    }
+  },
+  computed: {
+    ueLabel() {
+      return this.ueId?.label || 'UE'
     }
   },
   async mounted() {
+    const id = await this.getSessionCompoId()
+    if (!id) return
+
+    this.compoId = id
+    this.ueId = this.$route.params.ueId
+    console.log('this.compoId:', this.compoId)
+    console.log('Route params:', this.$route.params)
+
     await this.loadEvents()
   },
   methods: {
     async loadEvents() {
+      if (!this.compoId) {
+        console.warn('compoId manquant – impossible de charger les événements')
+        return
+      }
+
       const { data, error } = await supabase
         .from('event')
         .select('*')
         .eq('session_compo', this.compoId)
 
-      if (!error) this.events = data
+      if (error) {
+        console.error('Erreur chargement events:', error.message)
+      } else {
+        this.events = data
+      }
     },
-    async addEvent() {
-      if (this.newLabel.trim() === '') return
 
+    async addEvent(label) {
       const { error } = await supabase.from('event').insert([
         {
-          label: this.newLabel,
+          label,
           session_compo: this.compoId,
-          completed: false // valeur par défaut
+          completed: false
         }
       ])
 
       if (!error) {
-        this.newLabel = ''
         await this.loadEvents()
+      } else {
+        console.error('Erreur ajout event:', error.message)
       }
+    },
+
+    async getSessionCompoId() {
+      console.log('ueId:', this.$route.params.id);
+      console.log('sessionId:', this.$route.params.sessionId);
+      const { data, error } = await supabase
+        .from('session_compo')
+        .select('id')
+        .eq('ue', this.$route.params.id)
+        .eq('session', this.$route.params.sessionId)
+        .maybeSingle()
+      if (error || !data) {
+        console.error('Erreur récupération session_compo:', error?.message || 'Pas de résultat')
+        return null
+      }
+      return data.id
     }
   }
 }
