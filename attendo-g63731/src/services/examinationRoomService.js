@@ -44,3 +44,16 @@ export async function addRoomToEvent(eventId, roomLabel) {
   if (error) throw error
 }
 
+// recuperer bilan/oral/examen ...
+export async function getEventById(eventId) {
+  const { data, error } = await supabase
+    .from('event')
+    .select('label')
+    .eq('id', eventId)
+    .single()
+
+  if (error) throw error
+  return data.label
+}
+
+

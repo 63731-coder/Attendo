@@ -1,3 +1,4 @@
+import PresenceView from '@/components/PresenceView.vue'
 import { supabase } from '@/supabase'
 import AccueilView from '@/views/AccueilView.vue'
 import AProposView from '@/views/AProposView.vue'
@@ -53,7 +54,17 @@ const routes = [
       breadcrumb: 'Epreuve',
       breadcrumbParent: 'UE'
     }
+  },
+  {
+    path: '/sessions/:sessionId/:ueId/:eventId/:id',
+    name: 'Presence',
+    component: PresenceView,
+    meta: {
+      breadcrumb: 'Local',
+      breadcrumbParent: 'ExaminationRoom'
+    }
   }
+
 ]
 
 
