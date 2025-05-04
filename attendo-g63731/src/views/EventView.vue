@@ -7,44 +7,25 @@
     </h2>
 
     <!-- Cartes de locaux -->
-    <div class="flex gap-4 flex-wrap">
-      <div
-        v-for="(item, index) in rooms"
-        :key="index"
-        class="border p-4 rounded shadow w-40 text-center"
-      >
-        <div class="text-lg font-bold">{{ item.room }}</div>
-        <div class="text-sm text-gray-600">{{ item.nbStudents }} / {{ item.capacity }}</div>
-        <div class="text-sm font-semibold mt-2 capitalize">
-          {{ item.supervisor || 'Surveillant' }}
-        </div>
-      </div>
-    </div>
+    <RoomComponent :rooms="rooms" @room-click="goToRoom" />
+
 
     <!-- Formulaire ajout local -->
-    <AddFormComponent
-      titre="Ajouter un local"
-      :options="availableRooms"
-      :existants="rooms"
-      bouton-label="Ajouter"
-      prefix-label="Local"
-      placeholder="Choisissez un local"
-      message-doublon="Ce local est déjà ajouté."
-      identifiant="room"
-      type="select"
-      @ajout="ajouterSalle"
-    />
+    <AddFormComponent titre="Ajouter un local" :options="availableRooms" :existants="rooms" bouton-label="Ajouter"
+      prefix-label="Local" placeholder="Choisissez un local" message-doublon="Ce local est déjà ajouté."
+      identifiant="room" type="select" @ajout="ajouterSalle" />
   </div>
 </template>
 
 <script>
 import AddFormComponent from '@/components/AddFormComponent.vue'
 import BreadcrumbComponent from '@/components/BreadcrumbComponent.vue'
+import RoomComponent from '@/components/RoomComponent.vue'
 import EventService from '@/services/eventService'
 
 export default {
   name: 'EventView',
-  components: { BreadcrumbComponent, AddFormComponent },
+  components: { BreadcrumbComponent, AddFormComponent, RoomComponent },
   data() {
     return {
       sessionLabel: this.$route.params.sessionLabel,
@@ -91,7 +72,19 @@ export default {
       } catch (err) {
         console.error('Erreur ajout local :', err.message)
       }
+    },
+    goToRoom(roomLabel) {
+      this.$router.push({
+        name: 'RoomView',
+        params: {
+          sessionLabel: this.sessionLabel,
+          ue: this.ue,
+          eventLabel: this.eventLabel,
+          room: roomLabel
+        }
+      })
     }
+
   },
   mounted() {
     this.charger()

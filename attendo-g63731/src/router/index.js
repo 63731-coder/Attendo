@@ -2,6 +2,7 @@ import { supabase } from '@/supabase'
 import AccueilView from '@/views/AccueilView.vue'
 import AProposView from '@/views/AProposView.vue'
 import EventView from '@/views/EventView.vue'
+import RoomView from '@/views/RoomView.vue'
 import SessionsView from '@/views/SessionsView.vue'
 import SessionView from '@/views/SessionView.vue'
 import UEView from '@/views/UEView.vue'
@@ -42,10 +43,13 @@ const routes = [
     name: 'EventView',
     component: EventView,
     meta: { requiresAuth: true, breadcrumb: 'Épreuve' }
+  },
+  {
+    path: '/sessions/:sessionLabel/ue/:ue/event/:eventLabel/room/:room',
+    name: 'RoomView',
+    component: RoomView,
+    meta: { requiresAuth: true, breadcrumb: 'Salle' }
   }
-
-
-
 ]
 
 
