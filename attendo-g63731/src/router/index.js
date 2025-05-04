@@ -1,10 +1,11 @@
-import PresenceView from '@/components/PresenceView.vue'
 import { supabase } from '@/supabase'
 import AccueilView from '@/views/AccueilView.vue'
 import AProposView from '@/views/AProposView.vue'
-import ExaminationRoomView from '@/views/ExaminationRoomView.vue'
+import EventView from '@/views/EventView.vue'
 import SessionsView from '@/views/SessionsView.vue'
 import SessionView from '@/views/SessionView.vue'
+import UEView from '@/views/UEView.vue'
+
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
@@ -33,28 +34,17 @@ const routes = [
   {
     path: '/sessions/:sessionLabel/ue/:ue',
     name: 'UEView',
-    component: () => import('@/views/UEView.vue'),
+    component: UEView,
     meta: { requiresAuth: true, breadcrumb: 'UE' }
   },
   {
-    path: '/sessions/:sessionId/:ueId/:id',
-    name: 'ExaminationRoom',
-    component: ExaminationRoomView,
-    meta: {
-      requiresAuth: true,
-      breadcrumb: 'Epreuve',
-      breadcrumbParent: 'UE'
-    }
-  },
-  {
-    path: '/sessions/:sessionId/:ueId/:eventId/:id',
-    name: 'Presence',
-    component: PresenceView,
-    meta: {
-      breadcrumb: 'Local',
-      breadcrumbParent: 'ExaminationRoom'
-    }
+    path: '/sessions/:sessionLabel/ue/:ue/event/:eventLabel',
+    name: 'EventView',
+    component: EventView,
+    meta: { requiresAuth: true, breadcrumb: 'Épreuve' }
   }
+
+
 
 ]
 

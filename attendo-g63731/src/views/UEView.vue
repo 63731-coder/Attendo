@@ -1,5 +1,5 @@
 <template>
-  <div class="ml-10 space-y-8">
+  <div class="ml-10 space-y-10">
     <BreadcrumbComponent :items="breadcrumbItems" />
 
     <h2 class="text-2xl font-semibold text-sky-800">
@@ -7,27 +7,14 @@
     </h2>
 
     <!-- Cards des épreuves -->
-    <div class="flex gap-4 flex-wrap">
-      <CardComponent
-        v-for="(epreuve, index) in events"
-        :key="index"
-        :label="epreuve"
-      />
+    <div class="flex gap-4 flex-wrap ml-20">
+      <CardComponent v-for="(epreuve, index) in events" :key="index" :label="epreuve" @click="goToEvent(epreuve)" />
     </div>
 
     <!-- Formulaire d’ajout -->
-    <AddFormComponent
-      titre="Ajouter une épreuve"
-      :options="[]"
-      :existants="events"
-      bouton-label="Créer"
-      prefix-label="Intitulé :"
-      placeholder="bilan, projet, examen..."
-      message-doublon="Cette épreuve existe déjà."
-      identifiant=""
-      type="input"
-      @ajout="ajouterEpreuve"
-    />
+    <AddFormComponent titre="Ajouter une épreuve" :options="[]" :existants="events" bouton-label="Créer"
+      prefix-label="Intitulé :" placeholder="bilan, projet, examen..." message-doublon="Cette épreuve existe déjà."
+      identifiant="" type="input" @ajout="ajouterEpreuve" />
   </div>
 </template>
 
@@ -74,7 +61,18 @@ export default {
       } catch (err) {
         console.error('Erreur ajout épreuve :', err.message)
       }
+    },
+    goToEvent(label) {
+      this.$router.push({
+        name: 'EventView',
+        params: {
+          sessionLabel: this.sessionLabel,
+          ue: this.ue,
+          eventLabel: label
+        }
+      })
     }
+
   },
   mounted() {
     this.charger()
