@@ -47,7 +47,7 @@ const routes = [
   {
     path: '/sessions/:sessionLabel/ue/:ue/event/:eventLabel/room/:roomLabel',
     name: 'RoomView',
-    component: RoomView, // ou `() => import(...)`
+    component: RoomView,
     meta: { requiresAuth: true, breadcrumb: 'Local' }
   }
 

@@ -14,17 +14,19 @@
       :existants="[]"
       bouton-label="Valider"
       prefix-label="Surveillant"
-      placeholder="Choisissez un surveillant"
+      placeholder="Choisir/Modifier un surveillant"
       identifiant=""
       type="select"
       @ajout="validerSurveillant"
     />
 
-    <!-- Tableau étudiants -->
+    <!-- Tableau étudiants avec clic ligne -->
     <TableComponent
       :headers="['Matricule', 'Groupe', 'Nom', 'Prénom']"
       :data="students"
       :columns="['student_id', 'group', 'lastname', 'firstname']"
+      :rowClass="getRowClass"
+      @row-click="togglePresence"
     />
   </div>
 </template>
@@ -51,6 +53,7 @@ export default {
       students: [],
       currentSupervisor: null,
       availableSupervisors: [],
+      roomId: null,
       breadcrumbItems: [
         { label: 'Accueil', to: '/' },
         { label: 'sessions', to: '/sessions' },
@@ -75,10 +78,16 @@ export default {
         this.students = students
         this.currentSupervisor = supervisor
         this.availableSupervisors = availableSupervisors
+
+        const sessionCompoId = await RoomService.getSessionCompoId(this.sessionLabel, this.ue)
+        const eventId = await RoomService.getEventId(sessionCompoId, this.eventLabel)
+        const examRoom = await RoomService.getExaminationRoom(eventId, this.roomLabel)
+        this.roomId = examRoom.id
       } catch (err) {
         console.error('Erreur chargement salle :', err.message)
       }
     },
+
     async validerSurveillant(nouveauSupervisor) {
       try {
         await RoomService.setSupervisor(
@@ -93,6 +102,19 @@ export default {
       } catch (err) {
         console.error('Erreur définition surveillant :', err.message)
       }
+    },
+
+    async togglePresence(student) {
+      try {
+        await RoomService.toggleStudentPresence(this.roomId, student.student_id, student.isPresent)
+        student.isPresent = !student.isPresent
+      } catch (error) {
+        console.error("Erreur lors du changement de présence :", error)
+      }
+    },
+
+    getRowClass(student) {
+      return student.isPresent ? 'bg-blue-200' : 'bg-white'
     }
   },
   mounted() {
