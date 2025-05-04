@@ -1,8 +1,8 @@
 <template>
-  <div class="ml-10 space-y-8">
+  <div class="ml-10 space-y-10">
     <BreadcrumbComponent :items="breadcrumbItems" />
 
-    <h2 class="text-xl font-semibold text-sky-800">
+    <h2 class="text-2xl font-semibold text-sky-800">
       Liste des locaux pour <span class="font-bold">{{ eventLabel }}</span> - {{ ue }}
     </h2>
 
