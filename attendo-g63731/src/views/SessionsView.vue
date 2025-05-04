@@ -3,6 +3,9 @@
 
     <BreadcrumbComponent :items="breadcrumbItems" />
 
+    <h2 class="text-2xl font-semibold text-sky-800">Sessions</h2>
+
+
     <TableComponent :headers="['Session']" :data="sessions" :columns="['label']" @row-click="goToDetail" />
 
     <!-- Formulaire d'ajout -->

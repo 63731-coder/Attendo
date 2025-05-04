@@ -5,7 +5,6 @@ import AProposView from '@/views/AProposView.vue'
 import ExaminationRoomView from '@/views/ExaminationRoomView.vue'
 import SessionsView from '@/views/SessionsView.vue'
 import SessionView from '@/views/SessionView.vue'
-import UEView from '@/views/UEView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
@@ -32,14 +31,10 @@ const routes = [
     meta: { requiresAuth: true, breadcrumb: 'Session' }
   },
   {
-    path: '/sessions/:sessionId/:id',
-    name: 'UE',
-    component: UEView,
-    meta: {
-      requiresAuth: true,
-      breadcrumb: 'UE',
-      breadcrumbParent: 'Session'
-    }
+    path: '/sessions/:sessionLabel/ue/:ue',
+    name: 'UEView',
+    component: () => import('@/views/UEView.vue'),
+    meta: { requiresAuth: true, breadcrumb: 'UE' }
   },
   {
     path: '/sessions/:sessionId/:ueId/:id',

@@ -1,22 +1,33 @@
 <template>
-  <div class="bg-gray-100 min-h-screen px-6 pt-6">
-    <BreadcrumbComponent />
+  <div class="ml-10 space-y-8">
+    <BreadcrumbComponent :items="breadcrumbItems" />
 
-    <h2 class="text-xl font-bold text-sky-700 mb-6">
-      Liste des épreuves pour l'UE {{ ueId }}
+    <h2 class="text-2xl font-semibold text-sky-800">
+      Liste des épreuves de {{ ue }} (session : {{ sessionLabel }})
     </h2>
 
-    <div class="flex gap-4 flex-wrap mb-6 ml-20">
-      <CardComponent v-for="event in events" :key="event.id" :label="event.label" @click="goToEvent(event)" />
+    <!-- Cards des épreuves -->
+    <div class="flex gap-4 flex-wrap">
+      <CardComponent
+        v-for="(epreuve, index) in events"
+        :key="index"
+        :label="epreuve"
+      />
     </div>
 
-    <p v-if="events.length === 0" class="text-gray-600 mb-6 ml-20">
-      Aucune épreuve pour ce UE.
-    </p>
-
-    <AddFormComponent class="mt-10" :titre="'Ajouter une épreuve'" :type="'input'" :options="[]"
-      :placeholder="'bilan, projet, examen..'" :prefixLabel="'Intitulé'" :messageDoublon="'Cette épreuve existe déjà.'"
-      :existants="events" :identifiant="'label'" @ajout="addEvent" />
+    <!-- Formulaire d’ajout -->
+    <AddFormComponent
+      titre="Ajouter une épreuve"
+      :options="[]"
+      :existants="events"
+      bouton-label="Créer"
+      prefix-label="Intitulé :"
+      placeholder="bilan, projet, examen..."
+      message-doublon="Cette épreuve existe déjà."
+      identifiant=""
+      type="input"
+      @ajout="ajouterEpreuve"
+    />
   </div>
 </template>
 
@@ -24,14 +35,10 @@
 import AddFormComponent from '@/components/AddFormComponent.vue'
 import BreadcrumbComponent from '@/components/BreadcrumbComponent.vue'
 import CardComponent from '@/components/CardComponent.vue'
-
-import {
-  addEventToCompo,
-  getEventsBySessionCompo,
-  getSessionCompoId
-} from '../services/ueService'
+import UEService from '@/services/ueService'
 
 export default {
+  name: 'UEView',
   components: {
     BreadcrumbComponent,
     AddFormComponent,
@@ -39,42 +46,38 @@ export default {
   },
   data() {
     return {
-      ueId: this.$route.params.id,
-      sessionId: Number(this.$route.params.sessionId),
+      sessionLabel: this.$route.params.sessionLabel,
+      ue: this.$route.params.ue,
+      sessionCompoId: null,
       events: [],
-      compoId: null
+      breadcrumbItems: [
+        { label: 'Accueil', to: '/' },
+        { label: 'sessions', to: '/sessions' },
+        { label: 'session', to: `/sessions/${this.$route.params.sessionLabel}` },
+        { label: 'ue' }
+      ]
     }
   },
-  async mounted() {
-    this.compoId = await getSessionCompoId(this.sessionId, this.ueId)
-    if (!this.compoId) return
-
-    await this.loadEvents()
-  },
   methods: {
-    async loadEvents() {
-      if (!this.compoId) return
-      this.events = await getEventsBySessionCompo(this.compoId)
-    },
-
-    async addEvent(label) {
+    async charger() {
       try {
-        await addEventToCompo(label, this.compoId)
-        await this.loadEvents()
-      } catch (error) {
-        console.error("Erreur addEvent from UE:", error.message)
+        this.sessionCompoId = await UEService.getSessionCompo(this.sessionLabel, this.ue)
+        this.events = await UEService.getEvents(this.sessionCompoId)
+      } catch (err) {
+        console.error(err.message)
       }
     },
-    goToEvent(event) {
-    this.$router.push({
-      name: 'ExaminationRoom',
-      params: {
-        sessionId: this.$route.params.sessionId,
-        ueId: this.$route.params.id,
-        id: event.id
+    async ajouterEpreuve(nouveauLabel) {
+      try {
+        await UEService.addEvent(this.sessionCompoId, nouveauLabel)
+        this.events = await UEService.getEvents(this.sessionCompoId)
+      } catch (err) {
+        console.error('Erreur ajout épreuve :', err.message)
       }
-    })
-  }
+    }
+  },
+  mounted() {
+    this.charger()
   }
 }
 </script>

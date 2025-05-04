@@ -3,30 +3,17 @@
     <!-- Fil d'Ariane -->
     <BreadcrumbComponent :items="breadcrumbItems" />
 
-    <h2 class="text-xl font-bold">
+    <h2 class="text-2xl font-semibold text-sky-800">
       Session {{ sessionLabel }}
     </h2>
 
     <!-- Tableau des UEs ajoutées -->
-    <TableComponent
-      :headers="['Code UE']"
-      :data="ueList"
-      :columns="['ue']"
-    />
+    <TableComponent :headers="['Code UE']" :data="ueList" :columns="['ue']" @row-click="goToUE" />
 
     <!-- Formulaire pour ajouter une UE -->
-    <AddFormComponent
-      titre="Ajouter une UE à cette session"
-      :options="ueDisponibles"
-      :existants="ueList"
-      bouton-label="Ajouter"
-      prefix-label="UE"
-      placeholder="Choisissez une UE"
-      message-doublon="Cette UE est déjà ajoutée."
-      identifiant="ue"
-      type="select"
-      @ajout="ajouterUE"
-    />
+    <AddFormComponent titre="Ajouter une UE à cette session" :options="ueDisponibles" :existants="ueList"
+      bouton-label="Ajouter" prefix-label="UE" placeholder="Choisissez une UE"
+      message-doublon="Cette UE est déjà ajoutée." identifiant="ue" type="select" @ajout="ajouterUE" />
   </div>
 </template>
 
@@ -82,7 +69,17 @@ export default {
       } catch (err) {
         console.error("Erreur lors de l'ajout :", err.message)
       }
+    },
+    goToUE(row) {
+      this.$router.push({
+        name: 'UEView',
+        params: {
+          sessionLabel: this.sessionLabel,
+          ue: row.ue
+        }
+      })
     }
+
   },
   async mounted() {
     this.sessionLabel = this.$route.params.label

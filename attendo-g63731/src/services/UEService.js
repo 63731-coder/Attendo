@@ -1,46 +1,43 @@
 import { supabase } from '@/supabase'
 
-export async function getSessionCompoId(sessionId, ueId) {
-  const { data, error } = await supabase
-    .from('session_compo')
-    .select('id')
-    .eq('session', sessionId)
-    .eq('ue', ueId)
-    .maybeSingle()
+export default class UEService {
+  static async getSessionCompo(sessionLabel, ueCode) {
+    // Récupérer l'ID de session
+    const { data: session, error: sessionError } = await supabase
+      .from('session')
+      .select('id')
+      .eq('label', sessionLabel)
+      .single()
 
-  if (error || !data) {
-    console.error('Erreur récupération session_compo:', error?.message || 'Pas de résultat')
-    return null
+    if (sessionError) throw new Error('Session non trouvée')
+
+    const { data: compo, error: compoError } = await supabase
+      .from('session_compo')
+      .select('id')
+      .eq('session', session.id)
+      .eq('ue', ueCode)
+      .single()
+
+    if (compoError) throw new Error('UE non trouvée dans la session')
+
+    return compo.id
   }
 
-  return data.id
-}
+  static async getEvents(sessionCompoId) {
+    const { data, error } = await supabase
+      .from('event')
+      .select('label')
+      .eq('session_compo', sessionCompoId)
 
-export async function getEventsBySessionCompo(compoId) {
-  const { data, error } = await supabase
-    .from('event')
-    .select('*')
-    .eq('session_compo', compoId)
-
-  if (error) {
-    console.error('Erreur chargement events:', error.message)
-    return []
+    if (error) throw error
+    return data.map(e => e.label)
   }
 
-  return data
-}
+  static async addEvent(sessionCompoId, label) {
+    const { error } = await supabase
+      .from('event')
+      .insert([{ session_compo: sessionCompoId, label, completed: false }])
 
-export async function addEventToCompo(label, compoId) {
-  const { error } = await supabase.from('event').insert([
-    {
-      label,
-      session_compo: compoId,
-      completed: false
-    }
-  ])
-
-  if (error) {
-    console.error('Erreur ajout event:', error.message)
-    throw error
+    if (error) throw error
   }
 }
