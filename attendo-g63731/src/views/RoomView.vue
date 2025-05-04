@@ -4,30 +4,15 @@
 
     <h2 class="text-2xl font-semibold text-sky-800">
       Prise de présence du local {{ roomLabel }}
-      <span v-if="currentSupervisor" class="text-black">par {{ currentSupervisor }}</span>
+      <span v-if="currentSupervisor" class="text-2xl font-semibold text-sky-800">par {{ currentSupervisor }}</span>
     </h2>
 
-    <!-- Formulaire choix surveillant -->
-    <AddFormComponent
-      :titre="'Définir un surveillant'"
-      :options="availableSupervisors"
-      :existants="[]"
-      bouton-label="Valider"
-      prefix-label="Surveillant"
-      placeholder="Choisir/Modifier un surveillant"
-      identifiant=""
-      type="select"
-      @ajout="validerSurveillant"
-    />
+    <AddFormComponent :titre="'Définir un surveillant'" :options="availableSupervisors" :existants="[]"
+      bouton-label="Valider" prefix-label="Surveillant" placeholder="Choisir/Modifier surveillant" identifiant=""
+      type="select" @ajout="validerSurveillant" />
 
-    <!-- Tableau étudiants avec clic ligne -->
-    <TableComponent
-      :headers="['Matricule', 'Groupe', 'Nom', 'Prénom']"
-      :data="students"
-      :columns="['student_id', 'group', 'lastname', 'firstname']"
-      :rowClass="getRowClass"
-      @row-click="togglePresence"
-    />
+    <TableComponent :headers="['Matricule', 'Groupe', 'Nom', 'Prénom']" :data="students"
+      :columns="['student_id', 'group', 'lastname', 'firstname']" :rowClass="getRowClass" @row-click="togglePresence" />
   </div>
 </template>
 
@@ -54,16 +39,23 @@ export default {
       currentSupervisor: null,
       availableSupervisors: [],
       roomId: null,
-      breadcrumbItems: [
+
+    }
+  },
+  computed: {
+    breadcrumbItems() {
+      const { sessionLabel, ue, eventLabel } = this.$route.params
+      return [
         { label: 'Accueil', to: '/' },
         { label: 'sessions', to: '/sessions' },
-        { label: 'session', to: `/sessions/${this.sessionLabel}` },
-        { label: 'ue', to: `/sessions/${this.sessionLabel}/ue/${this.ue}` },
-        { label: 'épreuve', to: `/sessions/${this.sessionLabel}/ue/${this.ue}/event/${this.eventLabel}` },
+        { label: 'session', to: `/sessions/${sessionLabel}` },
+        { label: 'ue', to: `/sessions/${sessionLabel}/ue/${ue}` },
+        { label: 'épreuve', to: `/sessions/${sessionLabel}/ue/${ue}/event/${eventLabel}` },
         { label: 'local' }
       ]
     }
-  },
+  }
+  ,
   methods: {
     async chargerEtudiantsEtSurveillant() {
       try {

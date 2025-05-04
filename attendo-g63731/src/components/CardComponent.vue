@@ -1,7 +1,7 @@
 <template>
   <div
     @click="$emit('click')"
-    class="bg-white text-center font-semibold px-6 py-4 rounded-xl shadow w-40 capitalize cursor-pointer hover:bg-gray-200 transition"
+    class="bg-white text-center font-semibold px-6 py-4 rounded-xl shadow w-40 h-40 capitalize cursor-pointer hover:bg-gray-200 transition"
   >
     {{ label }}
   </div>

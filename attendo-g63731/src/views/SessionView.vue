@@ -1,16 +1,20 @@
 <template>
   <div class="ml-10 space-y-10">
-    <!-- Fil d'Ariane -->
     <BreadcrumbComponent :items="breadcrumbItems" />
 
     <h2 class="text-2xl font-semibold text-sky-800">
       Session {{ sessionLabel }}
     </h2>
 
-    <!-- Tableau des UEs ajoutées -->
-    <TableComponent :headers="['Code UE']" :data="ueList" :columns="['ue']" @row-click="goToUE" />
+    <div>
+      <TableComponent v-if="ueList.length > 0" :headers="['Code UE']" :data="ueList" :columns="['ue']"
+        @row-click="goToUE" />
 
-    <!-- Formulaire pour ajouter une UE -->
+      <p v-else class="italic text-gray-600 ml-15">
+        Aucune UE n’a encore été ajoutée à cette session.
+      </p>
+    </div>
+
     <AddFormComponent titre="Ajouter une UE à cette session" :options="ueDisponibles" :existants="ueList"
       bouton-label="Ajouter" prefix-label="UE" placeholder="Choisissez une UE"
       message-doublon="Cette UE est déjà ajoutée." identifiant="ue" type="select" @ajout="ajouterUE" />
@@ -44,7 +48,7 @@ export default {
     }
   },
   computed: {
-    // UEs disponibles à ajouter (exclure celles déjà ajoutées)
+    // exclure ue déjà ajoutées
     ueDisponibles() {
       const existantes = this.ueList.map(ue => ue.ue)
       return this.ueOptions.filter(ue => !existantes.includes(ue))

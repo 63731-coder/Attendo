@@ -6,11 +6,8 @@
       Liste des locaux pour <span class="font-bold">{{ eventLabel }}</span> - {{ ue }}
     </h2>
 
-    <!-- Cartes de locaux -->
     <RoomComponent :rooms="rooms" @room-click="goToRoom" />
 
-
-    <!-- Formulaire ajout local -->
     <AddFormComponent titre="Ajouter un local" :options="availableRooms" :existants="rooms" bouton-label="Ajouter"
       prefix-label="Local" placeholder="Choisissez un local" message-doublon="Ce local est déjà ajouté."
       identifiant="room" type="select" @ajout="ajouterSalle" />

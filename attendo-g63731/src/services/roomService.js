@@ -1,7 +1,10 @@
 import { supabase } from '@/supabase'
 
 export default {
-  // Récupérer la session_compo ID
+  /**
+   * Récupère l'identifiant (ID) de la ligne session_compo
+   * correspondant à une session (par label) et à une UE.
+   */
   async getSessionCompoId(sessionLabel, ue) {
     const sessionRes = await supabase
       .from('session')
@@ -24,7 +27,9 @@ export default {
     return compoRes.data.id
   },
 
-  // Récupérer l'ID de l'épreuve
+  /**
+   * Récupère l'ID d'une épreuve (event) à partir du session_compo ID et du label de l’épreuve.
+   */
   async getEventId(compoId, eventLabel) {
     const { data, error } = await supabase
       .from('event')
@@ -37,7 +42,9 @@ export default {
     return data.id
   },
 
-  // Récupérer la salle d'examen pour une épreuve
+  /**
+   * Récupère les infos de la salle (examination_room) utilisée pour une épreuve donnée.
+   */
   async getExaminationRoom(eventId, roomLabel) {
     const { data, error } = await supabase
       .from('examination_room')
@@ -50,7 +57,10 @@ export default {
     return data
   },
 
-  // Étudiants présents dans une salle
+  /**
+   * Récupère la liste des étudiants présents dans une salle d'examen.
+   * Renvoie un tableau contenant les matricules des étudiants.
+   */
   async getPresentStudentIds(roomId) {
     const { data, error } = await supabase
       .from('examination')
@@ -61,7 +71,9 @@ export default {
     return data.map(p => p.student)
   },
 
-  // Étudiants inscrits à l’UE via pae + données student
+  /**
+   * Récupère les étudiants inscrits à une UE, avec leur groupe et leurs infos.
+   */
   async getStudentsForUE(ue) {
     const { data, error } = await supabase
       .from('pae')
@@ -77,6 +89,7 @@ export default {
 
     if (error) throw error
 
+    // Formate les infos des étudiants
     return data.map(p => ({
       student_id: p.student_id,
       group: p.group,
@@ -85,7 +98,10 @@ export default {
     }))
   },
 
-  // Récupérer tous les étudiants pour l'écran RoomView
+  /**
+   * Récupère tous les étudiants d'une salle + surveillant actuel + surveillants disponibles.
+   * Sert pour afficher les données dans RoomView.
+   */
   async getRoomStudentsAndSupervisor(sessionLabel, ue, eventLabel, roomLabel) {
     const sessionCompoId = await this.getSessionCompoId(sessionLabel, ue)
     const eventId = await this.getEventId(sessionCompoId, eventLabel)
@@ -96,13 +112,13 @@ export default {
       this.getStudentsForUE(ue)
     ])
 
-    // Marquer les présents
+    // Ajoute un indicateur de présence à chaque étudiant
     const students = allStudents.map(s => ({
       ...s,
       isPresent: presentIds.includes(s.student_id)
     }))
 
-    // Récupérer surveillants disponibles
+    // Récupère tous les surveillants possibles (trigrammes)
     const { data: supervisors, error } = await supabase
       .from('teacher')
       .select('acro')
@@ -116,7 +132,9 @@ export default {
     }
   },
 
-  // Mettre à jour le surveillant
+  /**
+   * Met à jour le surveillant d'une salle pour une épreuve donnée.
+   */
   async setSupervisor(sessionLabel, ue, eventLabel, roomLabel, newSupervisor) {
     const sessionCompoId = await this.getSessionCompoId(sessionLabel, ue)
     const eventId = await this.getEventId(sessionCompoId, eventLabel)
@@ -130,7 +148,11 @@ export default {
     if (error) throw error
   },
 
-  // Activer ou désactiver la présence
+  /**
+   * Bascule la présence d’un étudiant dans une salle :
+   * - s'il est présent : on le supprime
+   * - s'il est absent : on l’ajoute
+   */
   async toggleStudentPresence(roomId, studentId, isPresent) {
     if (isPresent) {
       const { error } = await supabase

@@ -65,9 +65,9 @@ router.beforeEach(async (to, from, next) => {
   const user = data.user
 
   if (to.meta.requiresAuth && !user) {
-    next('/') // Redirige vers l'accueil si pas connecté
+    next('/') // redirige vers l'accueil si pas connecté
   } else {
-    next() // Autorise la navigation
+    next() // autorise la navigation
   }
 })
 

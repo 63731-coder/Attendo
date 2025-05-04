@@ -5,10 +5,8 @@
 
     <h2 class="text-2xl font-semibold text-sky-800">Sessions</h2>
 
-
     <TableComponent :headers="['Session']" :data="sessions" :columns="['label']" @row-click="goToDetail" />
 
-    <!-- Formulaire d'ajout -->
     <AddFormComponent titre="Ajouter une session" :options="[]" :existants="sessions" bouton-label="Ajouter"
       prefix-label="Session" placeholder="Nom de la session (ex: janvier)" message-doublon="Cette session existe déjà."
       identifiant="label" type="input" @ajout="ajouterSession" />

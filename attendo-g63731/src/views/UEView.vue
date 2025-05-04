@@ -6,12 +6,10 @@
       Liste des épreuves de {{ ue }} (session : {{ sessionLabel }})
     </h2>
 
-    <!-- Cards des épreuves -->
     <div class="flex gap-4 flex-wrap ml-20">
       <CardComponent v-for="(epreuve, index) in events" :key="index" :label="epreuve" @click="goToEvent(epreuve)" />
     </div>
 
-    <!-- Formulaire d’ajout -->
     <AddFormComponent titre="Ajouter une épreuve" :options="[]" :existants="events" bouton-label="Créer"
       prefix-label="Intitulé :" placeholder="bilan, projet, examen..." message-doublon="Cette épreuve existe déjà."
       identifiant="" type="input" @ajout="ajouterEpreuve" />

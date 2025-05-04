@@ -11,9 +11,6 @@
           {{ item.nbStudents }} / {{ item.capacity }} étudiants
         </div>
 
-        <!-- Capacité restante -->
-
-
         <!-- Surveillant -->
         <div class="text-sm font-semibold mt-2 capitalize">
           {{ item.supervisor || 'Surveillant' }}
