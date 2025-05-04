@@ -1,66 +1,65 @@
 <template>
-  <div class="bg-gray-100 min-h-screen px-6 pt-6">
-    <BreadcrumbComponent />
+  <div class="ml-10 space-y-10">
 
-    <h2 class="text-2xl font-bold text-sky-700 mb-6">Toutes les sessions</h2>
+    <BreadcrumbComponent :items="breadcrumbItems" />
 
-    <!-- TABLEAU DES SESSIONS -->
-    <TableComponent v-if="sessions.length > 0" :headers="['Session']" :data="sessions" :columns="['label']"
-      @row-click="goToSession" />
-    <p v-else class="text-gray-600 mb-6 ml-20">
-      Aucune session disponible.
-    </p>
+    <TableComponent :headers="['Session']" :data="sessions" :columns="['label']" @row-click="goToDetail" />
 
-    <!-- FORMULAIRE AJOUT SESSION -->
-    <AddFormComponent class="mt-10" :titre="'Ajouter une session'" :type="'input'" :options="[]"
-      :placeholder="'Nom de la session'" :prefixLabel="'Créer'" :messageDoublon="'Cette session existe déjà.'"
-      :existants="sessions" :identifiant="'label'" @ajout="handleAddSession" />
+    <!-- Formulaire d'ajout -->
+    <AddFormComponent titre="Ajouter une session" :options="[]" :existants="sessions" bouton-label="Ajouter"
+      prefix-label="Session" placeholder="Nom de la session (ex: janvier)" message-doublon="Cette session existe déjà."
+      identifiant="label" type="input" @ajout="ajouterSession" />
+
   </div>
 </template>
 
 <script>
-import AddFormComponent from '@/components/AddFormComponent.vue'
-import BreadcrumbComponent from '@/components/BreadcrumbComponent.vue'
-import TableComponent from '@/components/TableComponent.vue'
-
-import {
-  addSession,
-  getSessions
-} from '@/services/sessionsService.js'
+import AddFormComponent from "@/components/AddFormComponent.vue"
+import BreadcrumbComponent from "@/components/BreadcrumbComponent.vue"
+import TableComponent from "@/components/TableComponent.vue"
+import { addSession, getSessions } from "@/services/sessionsService"
 
 export default {
+  name: "SessionsView",
   components: {
-    BreadcrumbComponent,
     TableComponent,
-    AddFormComponent
+    AddFormComponent,
+    BreadcrumbComponent
+
   },
   data() {
     return {
-      sessions: []
+      sessions: [],
+      breadcrumbItems: [
+        { label: "Accueil", to: "/" },
+        { label: "Sessions" }
+      ]
     }
   },
-  async mounted() {
-    await this.loadSessions()
-  },
   methods: {
-    async loadSessions() {
+    async chargerSessions() {
       try {
         this.sessions = await getSessions()
       } catch (error) {
-        console.error('Erreur chargement sessions:', error.message)
+        console.error("Erreur lors du chargement des sessions :", error)
       }
     },
-    async handleAddSession(label) {
+    async ajouterSession(nouveauLabel) {
       try {
-        await addSession(label)
-        await this.loadSessions()
+        await addSession(nouveauLabel)
+        await this.chargerSessions() // Recharge la liste
       } catch (error) {
-        console.error('Erreur ajout session:', error.message)
+        console.error("Erreur lors de l'ajout :", error)
       }
     },
-    goToSession(session) {
-      this.$router.push(`/sessions/${session.id}`)
+    goToDetail(session) {
+      this.$router.push({ name: 'Session', params: { label: session.label } })
     }
+
+
+  },
+  mounted() {
+    this.chargerSessions()
   }
 }
 </script>

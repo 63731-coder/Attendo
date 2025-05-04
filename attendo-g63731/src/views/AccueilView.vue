@@ -1,21 +1,7 @@
-<script setup>
-import { ref, onMounted } from 'vue'
-import { supabase } from '@/supabase'
-import BreadcrumbComponent from '@/components/BreadcrumbComponent.vue'
-
-
-const user = ref(null)
-
-onMounted(async () => {
-  const { data } = await supabase.auth.getUser()
-  user.value = data.user
-})
-</script>
-
 <template>
-  <div class="px-6 pt-6"> <!-- padding entre breadcrumb et ^ -->
+  <div class="px-6 pt-6">
     <template v-if="user">
-      <BreadcrumbComponent />
+      <BreadcrumbComponent :items="breadcrumbItems" />
       <h2 class="text-xl font-semibold mb-2">Bonjour, {{ user.email }}</h2>
     </template>
     <template v-else>
@@ -23,3 +9,27 @@ onMounted(async () => {
     </template>
   </div>
 </template>
+
+<script>
+import BreadcrumbComponent from '@/components/BreadcrumbComponent.vue'
+import { supabase } from '@/supabase'
+
+export default {
+  name: 'HomeView',
+  components: {
+    BreadcrumbComponent
+  },
+  data() {
+    return {
+      user: null,
+      breadcrumbItems: [
+        { label: 'Accueil' }
+      ]
+    }
+  },
+  async mounted() {
+    const { data } = await supabase.auth.getUser()
+    this.user = data.user
+  }
+}
+</script>

@@ -3,8 +3,8 @@ import { supabase } from '@/supabase'
 import AccueilView from '@/views/AccueilView.vue'
 import AProposView from '@/views/AProposView.vue'
 import ExaminationRoomView from '@/views/ExaminationRoomView.vue'
-import SessionView from '@/views/SessionsView.vue'
-import SessionDetailView from '@/views/SessionView.vue'
+import SessionsView from '@/views/SessionsView.vue'
+import SessionView from '@/views/SessionView.vue'
 import UEView from '@/views/UEView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -17,7 +17,7 @@ const routes = [
   {
     path: '/sessions',
     name: 'Sessions',
-    component: SessionView,
+    component: SessionsView,
     meta: { requiresAuth: true, breadcrumb: 'Sessions' }
   },
   {
@@ -26,14 +26,10 @@ const routes = [
     component: AProposView,
   },
   {
-    path: '/sessions/:id',
+    path: '/sessions/:label',
     name: 'Session',
-    component: SessionDetailView,
-    meta: {
-      requiresAuth: true,
-      breadcrumb: 'Session',
-      breadcrumbParent: 'Sessions'
-    }
+    component: SessionView,
+    meta: { requiresAuth: true, breadcrumb: 'Session' }
   },
   {
     path: '/sessions/:sessionId/:id',

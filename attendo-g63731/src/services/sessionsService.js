@@ -1,23 +1,31 @@
-import { supabase } from '@/supabase'
+// src/services/sessionsService.js
 
-// Récupérer toutes les sessions triées par ID
+import { supabase } from "@/supabase"; // Assure-toi que ce fichier existe et est bien configuré
+
+// Fonction pour récupérer toutes les sessions
 export async function getSessions() {
   const { data, error } = await supabase
-    .from('session')
-    .select('*')
-    .order('id', { ascending: true })
+    .from("session")
+    .select("*")
 
-  if (error) throw error
+  if (error) {
+    console.error("Erreur lors du chargement des sessions :", error)
+    throw error
+  }
+
   return data
 }
 
-// Ajouter une session
+// Fonction pour ajouter une nouvelle session
 export async function addSession(label) {
   const { data, error } = await supabase
-    .from('session')
-    .insert({ label })
-    .select()
+    .from("session")
+    .insert([{ label }])
 
-  if (error) throw error
+  if (error) {
+    console.error("Erreur lors de l'ajout de la session :", error)
+    throw error
+  }
+
   return data
 }

@@ -13,7 +13,7 @@
         <tr v-for="(row, rowIndex) in data" :key="rowIndex" class="hover:bg-gray-300 cursor-pointer transition"
           @click="$emit('row-click', row)">
           <td v-for="(col, colIndex) in columns" :key="colIndex" class="px-4 py-2 text-blue-600">
-            {{ row.label }}
+            {{ row[col] }}
           </td>
         </tr>
       </tbody>

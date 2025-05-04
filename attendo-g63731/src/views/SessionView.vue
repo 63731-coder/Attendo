@@ -1,21 +1,32 @@
 <template>
-  <div class="bg-gray-100 min-h-screen px-6 pt-6">
-    <BreadcrumbComponent />
+  <div class="ml-10 space-y-10">
+    <!-- Fil d'Ariane -->
+    <BreadcrumbComponent :items="breadcrumbItems" />
 
-    <h2 class="text-2xl font-bold text-sky-700 mb-6">
-      UE évaluées dans la session {{ sessionLabel }}
+    <h2 class="text-xl font-bold">
+      Session {{ sessionLabel }}
     </h2>
 
-    <!-- TABLEAU DES UEs -->
-    <TableComponent v-if="ues.length > 0" :headers="['UE']" :data="ues" :columns="['ue']" @row-click="goToUE" />
-    <p v-else class="text-gray-600 mb-6 ml-20">
-      Aucune ue pour cette session
-    </p>
+    <!-- Tableau des UEs ajoutées -->
+    <TableComponent
+      :headers="['Code UE']"
+      :data="ueList"
+      :columns="['ue']"
+    />
 
-    <!-- FORMULAIRE AJOUT UE -->
-    <AddFormComponent class="mt-10" :titre="'Ajouter une UE dans la session'" :options="allUEs" :existants="ues"
-      :identifiant="'id'" :prefixLabel="'Ajouter'" :placeholder="'Choisissez une UE'"
-      :messageDoublon="'Cette UE est déjà ajoutée à la session.'" @ajout="handleAddUE" />
+    <!-- Formulaire pour ajouter une UE -->
+    <AddFormComponent
+      titre="Ajouter une UE à cette session"
+      :options="ueDisponibles"
+      :existants="ueList"
+      bouton-label="Ajouter"
+      prefix-label="UE"
+      placeholder="Choisissez une UE"
+      message-doublon="Cette UE est déjà ajoutée."
+      identifiant="ue"
+      type="select"
+      @ajout="ajouterUE"
+    />
   </div>
 </template>
 
@@ -23,15 +34,10 @@
 import AddFormComponent from '@/components/AddFormComponent.vue'
 import BreadcrumbComponent from '@/components/BreadcrumbComponent.vue'
 import TableComponent from '@/components/TableComponent.vue'
-
-import {
-  addUEToSession,
-  getAllUEs,
-  getSessionById,
-  getSessionUEs
-} from '@/services/sessionService.js'
+import SessionService from '@/services/sessionService'
 
 export default {
+  name: 'SessionView',
   components: {
     BreadcrumbComponent,
     TableComponent,
@@ -39,51 +45,48 @@ export default {
   },
   data() {
     return {
-      sessionId: this.$route.params.id,
       sessionLabel: '',
-      allUEs: [],
-      ues: []
+      sessionId: null,
+      ueList: [],       // UEs déjà ajoutées à cette session
+      ueOptions: [],    // Toutes les UEs possibles
+      breadcrumbItems: [
+        { label: 'Accueil', to: '/' },
+        { label: 'Sessions', to: '/sessions' },
+        { label: 'Session' }
+      ]
+    }
+  },
+  computed: {
+    // UEs disponibles à ajouter (exclure celles déjà ajoutées)
+    ueDisponibles() {
+      const existantes = this.ueList.map(ue => ue.ue)
+      return this.ueOptions.filter(ue => !existantes.includes(ue))
+    }
+  },
+  methods: {
+    async charger() {
+      try {
+        const session = await SessionService.getSessionByLabel(this.sessionLabel)
+        this.sessionId = session.id
+
+        this.ueList = await SessionService.getUEsForSession(this.sessionId)
+        this.ueOptions = await SessionService.getAllUEs()
+      } catch (err) {
+        console.error('Erreur lors du chargement :', err.message)
+      }
+    },
+    async ajouterUE(nouvelleUE) {
+      try {
+        await SessionService.addUEToSession(this.sessionId, nouvelleUE)
+        this.ueList = await SessionService.getUEsForSession(this.sessionId)
+      } catch (err) {
+        console.error("Erreur lors de l'ajout :", err.message)
+      }
     }
   },
   async mounted() {
-    await this.loadSessionLabel()
-    await this.loadAllUEs()
-    await this.loadSessionUEs()
-  },
-  methods: {
-    async loadSessionLabel() {
-      try {
-        const session = await getSessionById(this.sessionId)
-        this.sessionLabel = session.label
-      } catch (error) {
-        console.error('Erreur récupération label session:', error.message)
-      }
-    },
-    async loadAllUEs() {
-      try {
-        this.allUEs = await getAllUEs()
-      } catch (error) {
-        console.error('Erreur récupération toutes les UEs:', error.message)
-      }
-    },
-    async loadSessionUEs() {
-      try {
-        this.ues = await getSessionUEs(this.sessionId)
-      } catch (error) {
-        console.error('Erreur récupération UEs session:', error.message)
-      }
-    },
-    async handleAddUE(ueLabel) {
-      try {
-        await addUEToSession(this.sessionId, ueLabel)
-        await this.loadSessionUEs()
-      } catch (error) {
-        console.error('Erreur ajout UE:', error.message)
-      }
-    },
-    goToUE(ueRow) {
-      this.$router.push(`/sessions/${this.sessionId}/${ueRow.id}`)
-    }
+    this.sessionLabel = this.$route.params.label
+    this.charger()
   }
 }
 </script>
