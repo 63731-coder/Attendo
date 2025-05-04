@@ -45,11 +45,13 @@ const routes = [
     meta: { requiresAuth: true, breadcrumb: 'Épreuve' }
   },
   {
-    path: '/sessions/:sessionLabel/ue/:ue/event/:eventLabel/room/:room',
+    path: '/sessions/:sessionLabel/ue/:ue/event/:eventLabel/room/:roomLabel',
     name: 'RoomView',
-    component: RoomView,
-    meta: { requiresAuth: true, breadcrumb: 'Salle' }
+    component: RoomView, // ou `() => import(...)`
+    meta: { requiresAuth: true, breadcrumb: 'Local' }
   }
+
+
 ]
 
 

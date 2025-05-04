@@ -80,11 +80,10 @@ export default {
           sessionLabel: this.sessionLabel,
           ue: this.ue,
           eventLabel: this.eventLabel,
-          room: roomLabel
+          roomLabel: roomLabel
         }
       })
     }
-
   },
   mounted() {
     this.charger()
