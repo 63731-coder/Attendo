@@ -1,15 +1,18 @@
 <template>
   <HeaderComponent />
+  <NavComponent />
   <router-view />
 </template>
 
 <script>
 import HeaderComponent from './components/HeaderComponent.vue';
+import NavComponent from './components/NavComponent.vue'
 
 export default {
   name: 'App',
   components: {
-    HeaderComponent
+    HeaderComponent,
+    NavComponent
   }
 }
 </script>

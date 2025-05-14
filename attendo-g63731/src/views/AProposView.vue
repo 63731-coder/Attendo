@@ -3,8 +3,8 @@
     <BreadcrumbComponent :items="breadcrumbItems" />
 
     <h2 class="text-2xl font-semibold mb-2 text-sky-800">À propos</h2>
-    <p>Auteur : Nicoleta</p>
-    <p>Année scolaire : 2025-2026</p>
+    <p>Auteur : Nicoleta Opre</p>
+    <p>Année scolaire : 2024-2025</p>
     <p>Technologies : Vue 3, TailwindCSS, Supabase</p>
   </div>
 </template>

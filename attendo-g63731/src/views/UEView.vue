@@ -10,6 +10,10 @@
       <CardComponent v-for="(epreuve, index) in events" :key="index" :label="epreuve" @click="goToEvent(epreuve)" />
     </div>
 
+    <p v-if="events.length == 0" class="italic text-gray-600 ml-15">
+      Aucune épreuve n’a encore été ajoutée à cette UE.
+    </p>
+
     <AddFormComponent titre="Ajouter une épreuve" :options="[]" :existants="events" bouton-label="Créer"
       prefix-label="Intitulé :" placeholder="bilan, projet, examen..." message-doublon="Cette épreuve existe déjà."
       identifiant="" type="input" @ajout="ajouterEpreuve" />
