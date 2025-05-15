@@ -2,7 +2,7 @@
   <div>
     <div v-if="rooms.length > 0" class="flex gap-4 flex-wrap ml-15">
       <div v-for="(item, index) in rooms" :key="index"
-        class="border p-4 rounded shadow w-40 text-center cursor-pointer hover:bg-gray-100 transition"
+        class="border p-4 rounded shadow w-40 text-center cursor-pointer hover:bg-gray-200 transition"
         @click="$emit('room-click', item.room)">
         <div class="text-lg font-bold">{{ item.room }}</div>
 
