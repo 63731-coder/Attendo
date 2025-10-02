@@ -17,7 +17,7 @@ Attendo is a **Vue.js web application** designed to help teachers **take attenda
 
 ---
 
-## 🛠 Technical Details
+## Technical Details
 
 * **Frontend Framework**: Vue 3 + Vite
 * **Styling**: Tailwind CSS
